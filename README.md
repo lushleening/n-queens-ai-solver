@@ -1,12 +1,11 @@
 # N-Queens AI Solver (Tkinter Visualization)
 
-<img width="799" height="527" alt="image" src="https://github.com/user-attachments/assets/7e6961d5-67e8-495a-8497-0e73c31e38dd" />
-
-<img width="1051" height="864" alt="image" src="https://github.com/user-attachments/assets/d71ebd4b-acab-4214-abe0-228722c5e5d5" />
-
 An interactive N-Queens puzzle solver built using Python and Tkinter.  
 The project demonstrates the backtracking algorithm through a visual board interface, along with real-time performance metrics for both AI and user interaction.
 
+<img width="799" height="527" alt="image" src="https://github.com/user-attachments/assets/7e6961d5-67e8-495a-8497-0e73c31e38dd" />
+
+<img width="1051" height="864" alt="image" src="https://github.com/user-attachments/assets/d71ebd4b-acab-4214-abe0-228722c5e5d5" />
 
 ---
 
