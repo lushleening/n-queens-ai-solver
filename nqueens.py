@@ -3,13 +3,14 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 class Nqueens:
-    def __init__(self, n):
+    def __init__(self, n): # self refers to the current object (instance) of the class
+
         # ai performance metrics
-        self.iteration = 0
+        self.iteration = 0 #node expansion
         self.recursivecall = 0
         self.runtime = 0
         self.solutions_found = 0
-        self.backtrack = 0
+        self.backtrack = 0 # no of times queen was removed
         self.steps = 0
         
         self.user_steps = 0
@@ -20,6 +21,7 @@ class Nqueens:
         self.highlight = None
         self.lockboard = False
 
+        # board representation (2d array)
         self.boardmatrix = [[0 for col in range(n)] for row in range(n)]
 
         self.window = tk.Tk()
@@ -29,7 +31,8 @@ class Nqueens:
 
         self.window_width = 1100
         self.windowheight = 620
-        self.cellsize = self.windowheight // n
+        self.cellsize = self.windowheight // n 
+        # makes sure each cell is the same size
 
         # Main container
         mainframe = tk.Frame(self.window, bg="#1a1a2e")
@@ -143,6 +146,7 @@ class Nqueens:
         return value_label
 
     def nqueens_board(self):
+        # to formulate the grid/board
         self.canvas.delete("all")
         
         padding = 2
@@ -175,6 +179,7 @@ class Nqueens:
         if self.lockboard:
             return
 
+        # detect the square that has been clicked (pixel pos divide cell size)
         row = event.y // self.cellsize
         col = event.x // self.cellsize
 
@@ -212,20 +217,25 @@ class Nqueens:
         self.nqueens_board()
 
     def valid_pos(self, row, col):
+        # check if column is occupied first (check if there's already a queen placed)
         for i in range(row):
             if self.boardmatrix[i][col] == 1:
                 return False
             
+        # check upper left diagonal
         i = row - 1
         j = col - 1
+
         while i >= 0 and j >= 0:
             if self.boardmatrix[i][j] == 1:
                 return False
             i -= 1
             j -= 1
 
+        # check upper right diagonal
         i = row - 1
         j = col + 1
+
         while i >= 0 and j < self.boardsize:
             if self.boardmatrix[i][j] == 1:
                 return False
@@ -274,11 +284,11 @@ class Nqueens:
         start_timer = time.time()
         
         def backtracking(row):
-            self.recursivecall += 1
+            self.recursivecall += 1 #checks how many time recursion goes deeper
             if row == self.boardsize:
                 return True
             for col in range(self.boardsize):
-                self.iteration += 1
+                self.iteration += 1 # everytime a column is tested in a row
                 if self.valid_pos(row, col):
                     self.boardmatrix[row][col] = 1
                     self.steps += 1
@@ -288,7 +298,7 @@ class Nqueens:
                     if backtracking(row + 1):
                         return True
                     self.boardmatrix[row][col] = 0
-                    self.backtrack += 1
+                    self.backtrack += 1 # increment backtrack when a queen is removed / no of undo
                     self.steps += 1
                     self.nqueens_board()
                     self.window.update()
@@ -314,13 +324,8 @@ class Nqueens:
         
         if found_solution:
             self.status_indicator.config(text="● Solved", fg="#00d2ff")
-            messagebox.showinfo(f"{self.boardsize}-Queens", 
-                               f"{self.boardsize}-Queens is solved!\n\n"
-                               f"Performance Summary:\n"
-                               f"  Iterations: {self.iteration}\n"
-                               f"  Recursive calls: {self.recursivecall}\n"
-                               f"  Backtracks: {self.backtrack}\n"
-                               f"  Runtime: {self.runtime:.4f}s")
+            messagebox.showinfo(
+                f"{self.boardsize}-Queens", f"{self.boardsize}-Queens is solved!\n\n")
         else:
             self.status_indicator.config(text="● Failed", fg="#e94560")
 
@@ -358,9 +363,11 @@ class Nqueens:
             messagebox.showwarning("Check", f"Only ({queens}) queen was placed, {self.boardsize} queens are required")
             return 
 
+        # Verify each queen position is valid
         for row in range(self.boardsize):
             for col in range(self.boardsize):
                 if self.boardmatrix[row][col] == 1:
+                    # Temporarily remove queen to avoid self check
                     self.boardmatrix[row][col] = 0
                     if not self.valid_pos(row, col):
                         self.boardmatrix[row][col] = 1
@@ -372,14 +379,17 @@ class Nqueens:
         if not self.lockboard and self.user_startTime is not None:
             self.user_runtime = time.time() - self.user_startTime
             self.user_runtime_label.config(text=f"{self.user_runtime:.4f}s")
-            self.lockboard = True
+            self.lockboard = True  
             self.status_indicator.config(text="● Valid Solution", fg="#00d2ff")
             messagebox.showinfo("Check", "Correct! Your solution is valid. Please reset the board to play again.")
         else:
             self.status_indicator.config(text="● Valid Solution", fg="#00d2ff")
             messagebox.showinfo("Check", "Correct! Your solution is valid. Please reset the board to play again.")
 
+# --------------------------------------------------
+
 def entrypage():
+
     frame = tk.Tk()
     frame.title("N-Queens Game")
     frame.geometry("800x500")
@@ -390,6 +400,7 @@ def entrypage():
     style.theme_use("clam")
 
     def start_game():
+        
         try:
             n = int(entrySize.get())
             if n < 1:
@@ -409,12 +420,14 @@ def entrypage():
     title_frame = tk.Frame(main_container, bg="#1a1a2e")
     title_frame.pack(pady=(0, 30))
 
-    title_label = tk.Label(title_frame, text="N-Queens Solver", 
-                           font=("Segoe UI", 36, "bold"), bg="#1a1a2e", fg="#e94560")
+    title_label = tk.Label(
+        title_frame, text="N-Queens Solver",
+        font=("Segoe UI", 36, "bold"), bg="#1a1a2e", fg="#e94560")
     title_label.pack()
 
-    subtitle_label = tk.Label(title_frame, text="Place N queens on an N x N board so no two attack each other",
-                             font=("Segoe UI", 13), bg="#1a1a2e", fg="#a8b2d1")
+    subtitle_label = tk.Label(
+        title_frame, text="Place N queens on an N x N board so no two attack each other",
+        font=("Segoe UI", 13), bg="#1a1a2e", fg="#a8b2d1")
     subtitle_label.pack(pady=(5, 0))
 
     # Input section
